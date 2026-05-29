@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML Fragment Evidence</title>
+<link rel="stylesheet" href="static/style.css">
+<style>
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-ui,system-ui,sans-serif);}
+  .evidence-shell{padding:24px;max-width:980px;margin:0 auto;}
+  .evidence-title{font-size:14px;font-weight:700;color:var(--strong);margin:0 0 12px;}
+  .msg{display:block;margin:0 0 18px;}
+  .msg-body{max-width:920px;padding:0;}
+  @media(max-width:500px){.evidence-shell{padding:12px}.msg-body{max-width:100%;}}
+</style>
+</head>
+<body>
+<div class="evidence-shell">
+  <div class="evidence-title">Hermes WebUI PR #3052 — HTML Fragment renderer evidence</div>
+  <div class="msg assistant"><div class="msg-body" id="target"></div></div>
+</div>
+<script src="static/ui.js"></script>
+<script>
+const sample = `## Renderer evidence
+
+Legacy Markdown remains normal: **bold**, \`inline code\`, and regular paragraphs.
+
+<!-- html-render-start -->
+<div data-html-fragment-id="pr-evidence-card">
+  <div data-html-fragment-role="header">
+    <div>
+      <div data-html-fragment-role="title">Styled card via explicit HTML Fragment</div>
+      <div data-html-fragment-role="subtitle">Rendered only because the block is wrapped by html-render-start/end markers.</div>
+    </div>
+    <div data-html-fragment-role="badge">Fragment</div>
+  </div>
+  <div data-html-fragment-role="grid">
+    <div data-html-fragment-role="item">
+      <div data-html-fragment-role="item-title">Sanitized</div>
+      <div data-html-fragment-role="item-desc">script/event handlers and dangerous URLs are filtered.</div>
+    </div>
+    <div data-html-fragment-role="item">
+      <div data-html-fragment-role="item-title">Scoped</div>
+      <div data-html-fragment-role="item-desc">The card uses transcript-scoped styles and existing CSS variables.</div>
+    </div>
+    <div data-html-fragment-role="item">
+      <div data-html-fragment-role="item-title">Responsive</div>
+      <div data-html-fragment-role="item-desc">The grid collapses to one column on narrow mobile widths.</div>
+    </div>
+  </div>
+  <div data-html-fragment-role="note">This is the live rendered fragment path.</div>
+</div>
+<!-- html-render-end -->
+
+Inline marker example should stay text when escaped: \`<!-- html-render-start -->\` and \`<!-- html-render-end -->\`.
+
+\`\`\`html
+<!-- html-render-start -->
+<div data-html-fragment-id="source-only">
+  <div data-html-fragment-role="title">Nested marker inside fenced code stays source-only</div>
+</div>
+<!-- html-render-end -->
+\`\`\`
+`;
+document.getElementById('target').innerHTML = renderMd(sample);
+</script>
+</body>
+</html>
